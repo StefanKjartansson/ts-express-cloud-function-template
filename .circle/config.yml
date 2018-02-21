@@ -1,0 +1,90 @@
+# defaults shared between all jobs
+defaults: &defaults
+  working_directory: ~/project
+  
+# attach is here mainly to prevent hard to debug spelling mistakes
+attach: &attach
+  at: ~/project
+
+deploy_branches: &deploy_branches
+  branches:
+    only:
+      - master
+
+version: 2
+jobs:
+
+  run_tests:
+    <<: *defaults
+    docker:
+      - image: node:8.7.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - fe-deps-{{ checksum "package.json" }}
+          - fe-deps-
+      - run: yarn install
+      - save_cache:
+          paths:
+            - node_modules
+          key: fe-deps-{{ checksum "package.json" }}
+      - run: yarn test
+      - persist_to_workspace:
+          root: .
+          paths: 
+            - node_modules
+
+  build_dist:
+    <<: *defaults
+    docker:
+      - image: node:8.7.0
+    steps:      
+      - checkout
+      # attach the node_modules from the first step
+      - attach_workspace:
+          <<: *attach
+      - run:
+          name: build
+          command: |            
+            node scripts/copy-dependencies.js > dist/package.json
+            yarn run build
+      - persist_to_workspace:
+          root: .
+          paths: 
+            - dist
+
+  deploy:
+    <<: *defaults
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - checkout
+      - attach_workspace:
+          <<: *attach
+      - run:
+          name: Dump Google Cloud Credentials to file
+          command: echo ${GCP_AUTH} | base64 --decode --ignore-garbage > ${HOME}/gcp-key.json
+      - run:
+          name: Upload to Google Cloud Storage
+          command: |
+            gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
+            gcloud --quiet config set project ${GCP_PROJECT}
+            cd dist
+            gcloud beta functions deploy ${GCP_FUNCTION} --entry-point handler --trigger-http --verbosity=info
+
+workflows:
+  version: 2
+  test-deploy:
+    jobs:
+      - run_tests
+      - build_dist:
+          requires:
+            - run_tests
+          filters:
+            <<: *deploy_branches
+      - deploy:
+          requires:
+            - build_dist
+          filters:
+            <<: *deploy_branches
