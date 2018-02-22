@@ -31,3 +31,4 @@ GCP_PROJECT=Your project id from GCP.
 GCP_FUNCTION=The name of the function in GCP.
 ```
 - Push change and circle should deploy your function.
+- When calling your function, remember to append a slash to the path
