@@ -25,7 +25,9 @@ yarn install
 - In GCP, enable cloud functions for your project 
 - Export service account key with cloud function developer permissions
 - Configure project in [circleci](https://circleci.com) and add the following environment variables:
-** GCP_AUTH=Value should be base64 encoded service account "base64 <your-service-account.json>"
-**GCP_PROJECT=Your project id from GCP.
-**GCP_FUNCTION=The name of the function in GCP.
+```
+GCP_AUTH=Value should be base64 encoded service account key "base64 <your-service-account.json>"
+GCP_PROJECT=Your project id from GCP.
+GCP_FUNCTION=The name of the function in GCP.
+```
 - Push change and circle should deploy your function.
