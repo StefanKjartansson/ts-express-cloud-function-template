@@ -6,14 +6,12 @@
   "author": "Stefan Kjartansson",
   "license": "MIT",
   "private": false,
-  "main": "dist/index.js",
   "scripts": {
     "start": "yarn run serve",
     "build": "yarn run build-ts",
     "serve": "node dist/server.js",
     "test": "jest --forceExit --coverage --verbose",
-    "build-ts": "tsc",
-    "deploy": "yarn run build && gcloud beta functions deploy project --entry-point handler --trigger-http --memory=256MB"
+    "build-ts": "tsc"
   },
   "dependencies": {
     "express": "^4.16.2"
