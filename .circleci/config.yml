@@ -13,7 +13,6 @@ deploy_branches: &deploy_branches
 
 version: 2
 jobs:
-
   run_tests:
     <<: *defaults
     docker:
@@ -34,7 +33,6 @@ jobs:
           root: .
           paths: 
             - node_modules
-
   build_dist:
     <<: *defaults
     docker:
@@ -53,7 +51,6 @@ jobs:
           root: .
           paths: 
             - dist
-
   deploy:
     <<: *defaults
     docker:
