@@ -20,7 +20,7 @@ yarn install
 - Update package.json with <project_name> and related information.
 - Write code
 
-# Configuring services & build
+# Configuring services & deployment pipeline
 
 - In GCP, enable cloud functions for your project 
 - Export service account key with cloud function developer permissions
