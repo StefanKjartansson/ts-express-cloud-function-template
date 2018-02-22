@@ -4,7 +4,7 @@ Project template for spinning up [express](https://expressjs.com/) powered [clou
 
 # Pre-reqs
 - Install [Node.js](https://nodejs.org/en/)
-- Signup for [circleci](https://circleci.com)
+- [Circleci](https://circleci.com) account
 - [GCP](https://cloud.google.com/) account 
 
 # Getting started
